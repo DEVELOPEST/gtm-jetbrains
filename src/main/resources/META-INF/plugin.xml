@@ -1,12 +1,11 @@
 <idea-plugin>
-    <id>org.example.gtm-jetbrains</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <id>ee.taltech.gtm-jetbrains</id>
+    <name>Gtm-Jetbrains</name>
+    <vendor email="tavo.annus@gmail.com" url="">TODO</vendor>
 
-    <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-    ]]></description>
+    <description>TODO
+     dddgdgdfgdfgdfgdgdfgdfgdfgdfgdgdgdgdgdgdg
+     </description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -14,7 +13,15 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <editorFactoryMouseListener implementation="ee.taltech.gtm.CustomEditorMouseListener"/>
+        <fileDocumentManagerListener implementation="ee.taltech.gtm.CustomSaveListener"/>
+        <editorFactoryDocumentListener implementation="ee.taltech.gtm.CustomDocumentListener"/>
     </extensions>
+
+    <projectListeners>
+        <listener class="ee.taltech.gtm.CustomRunListener"
+                  topic="com.intellij.task.ProjectTaskListener"/>
+    </projectListeners>
 
     <actions>
         <!-- Add your actions here -->

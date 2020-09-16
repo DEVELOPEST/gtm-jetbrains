@@ -10,6 +10,9 @@ plugins {
 group 'ee.taltech'
 version '1.0-SNAPSHOT'
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version '2020.2.2'
