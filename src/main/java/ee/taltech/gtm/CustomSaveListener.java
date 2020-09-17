@@ -12,6 +12,7 @@ public class CustomSaveListener implements FileDocumentManagerListener {
     public void beforeDocumentSaving(@NotNull Document document) {
         FileDocumentManager instance = FileDocumentManager.getInstance();
         VirtualFile file = instance.getFile(document);
-        // TODO: Dispatch event
+        var project = Util.getProject(document);
+        project.ifPresent(p -> GtmWrapper.getInstance().recordFile(p, file));
     }
 }

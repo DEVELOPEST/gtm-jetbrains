@@ -4,7 +4,7 @@ import com.intellij.task.ProjectTaskContext;
 import com.intellij.task.ProjectTaskListener;
 import org.jetbrains.annotations.NotNull;
 
-public class CustomRunListener implements ProjectTaskListener {
+public class CustomProjectTask implements ProjectTaskListener {
 
     @Override
     public void started(@NotNull ProjectTaskContext context) {

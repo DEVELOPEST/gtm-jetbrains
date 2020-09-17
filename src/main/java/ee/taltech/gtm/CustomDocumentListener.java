@@ -14,6 +14,7 @@ public class CustomDocumentListener implements DocumentListener {
         Document document = event.getDocument();
         FileDocumentManager instance = FileDocumentManager.getInstance();
         VirtualFile file = instance.getFile(document);
-        // TODO: send event
+        var project = Util.getProject(document);
+        project.ifPresent(p -> GtmWrapper.getInstance().recordFile(p, file));
     }
 }

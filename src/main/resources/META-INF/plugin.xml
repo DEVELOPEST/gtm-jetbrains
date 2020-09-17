@@ -19,7 +19,7 @@
     </extensions>
 
     <projectListeners>
-        <listener class="ee.taltech.gtm.CustomRunListener"
+        <listener class="ee.taltech.gtm.CustomProjectTask"
                   topic="com.intellij.task.ProjectTaskListener"/>
     </projectListeners>
 

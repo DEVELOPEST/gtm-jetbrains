@@ -14,6 +14,6 @@ public class CustomEditorMouseListener implements EditorMouseListener {
         FileDocumentManager instance = FileDocumentManager.getInstance();
         VirtualFile file = instance.getFile(event.getEditor().getDocument());
         Project project = event.getEditor().getProject();
-        // TODO: Send event
+        GtmWrapper.getInstance().recordFile(project, file);
     }
 }
