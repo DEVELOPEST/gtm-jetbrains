@@ -1,21 +1,49 @@
 package ee.taltech.gtm;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class GtmWrapper {
-    private static final Long RECORD_MIN_THRESHOLD = 30000L; // 30 seconds
+
+    public enum AppEventType {
+        RUN("run"),
+        DEBUG("debug");
+
+        AppEventType(String command) {
+            this.command = command;
+        }
+
+        private final String command;
+
+        public String getCommand() {
+            return command;
+        }
+    }
+
+    private static final Long RECORD_MIN_THRESHOLD = 10000L; // 10 seconds
     private static final String RECORD_COMMAND = "record";
+    private static final String VERIFY_COMMAND = "verify";
+    private static final String STATUS_OPTION = "--status";
 
     private static String gtmExePath = null;
     private static boolean gtmExeFound = false;
+
+    private static String lastRecordPath = null;
+    private static Long lastRecordTime = null;
+    private static Long lastRunTime = null;
+
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static Future recordTask;
+    private static Long MAX_RUN_TIME = 2000L; // 2 seconds
 
     private static GtmWrapper instance = null;
 
@@ -71,6 +99,46 @@ public class GtmWrapper {
     }
 
     public void recordFile(Project project, VirtualFile file) {
+        Runnable r = () -> runRecord(file.getPath(), project);
+        submitRecord(r);
+    }
 
+    protected void runRecord(AppEventType type, Project project) {
+        runRecord(type.getCommand(), project);;
+    }
+
+    protected void runRecord(String args, Project project) {
+        if (StringUtils.isBlank(args)) return;
+        if (!gtmExeFound) {
+            return;
+        }
+        try {
+            Long currentTime = System.currentTimeMillis();
+            if (Objects.equals(lastRecordPath, args)) {
+                if (lastRecordTime != null && currentTime - lastRecordTime <= RECORD_MIN_THRESHOLD) {
+                    return;
+                }
+            }
+            lastRecordPath = args;
+            lastRecordTime = currentTime;
+
+            Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, args).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    private static synchronized void submitRecord(Runnable r) {
+        if (recordTask != null && !recordTask.isDone()) {
+            // make sure it's not a hung process
+            if (lastRunTime != null && System.currentTimeMillis() - lastRunTime > MAX_RUN_TIME) {
+                // process is hung, cancel it
+                recordTask.cancel(true);
+                System.out.println("Record task cancelled");
+            }
+        }
+        recordTask = executor.submit(r);
+        lastRunTime = System.currentTimeMillis();
     }
 }
