@@ -4,8 +4,8 @@
     <vendor email="tavo.annus@gmail.com" url="">TODO</vendor>
 
     <description>TODO
-     dddgdgdfgdfgdfgdgdfgdfgdfgdfgdgdgdgdgdgdg
-     </description>
+        dddgdgdfgdfgdfgdgdfgdfgdfgdfgdgdgdgdgdgdg
+    </description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -13,14 +13,16 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <editorFactoryMouseListener implementation="ee.taltech.gtm.CustomEditorMouseListener"/>
-        <fileDocumentManagerListener implementation="ee.taltech.gtm.CustomSaveListener"/>
-        <editorFactoryDocumentListener implementation="ee.taltech.gtm.CustomDocumentListener"/>
+        <editorFactoryMouseListener implementation="ee.taltech.gtm.listener.CustomEditorMouseListener"/>
+        <fileDocumentManagerListener implementation="ee.taltech.gtm.listener.CustomSaveListener"/>
+        <editorFactoryDocumentListener implementation="ee.taltech.gtm.listener.CustomDocumentListener"/>
     </extensions>
 
     <projectListeners>
-        <listener class="ee.taltech.gtm.CustomProjectTask"
+        <listener class="ee.taltech.gtm.listener.CustomProjectTaskListener"
                   topic="com.intellij.task.ProjectTaskListener"/>
+        <listener class="ee.taltech.gtm.listener.CustomBuildProcessListener"
+                  topic="com.intellij.build.BuildProgressListener"/>
     </projectListeners>
 
     <actions>

@@ -1,4 +1,4 @@
-package ee.taltech.gtm;
+package ee.taltech.gtm.listener;
 
 import com.intellij.openapi.editor.event.VisibleAreaEvent;
 import com.intellij.openapi.editor.event.VisibleAreaListener;

@@ -103,8 +103,13 @@ public class GtmWrapper {
         submitRecord(r);
     }
 
+    public void recordEvent(Project project, AppEventType event) {
+        Runnable r = () -> runRecord(event, project);
+        submitRecord(r);
+    }
+
     protected void runRecord(AppEventType type, Project project) {
-        runRecord(type.getCommand(), project);;
+        runRecord(type.getCommand(), project);
     }
 
     protected void runRecord(String args, Project project) {
