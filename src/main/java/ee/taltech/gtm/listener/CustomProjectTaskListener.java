@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.task.ProjectTaskContext;
 import com.intellij.task.ProjectTaskListener;
 import com.intellij.task.ProjectTaskManager;
+import ee.taltech.gtm.AppEventType;
 import ee.taltech.gtm.GtmWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,8 @@ public class CustomProjectTaskListener implements ProjectTaskListener {
         RunConfiguration configuration = context.getRunConfiguration();
         if (configuration == null) return;
         Project project = configuration.getProject();
-        GtmWrapper.getInstance().recordEvent(project, GtmWrapper.AppEventType.RUN);
+        String name = configuration.getName();
+        GtmWrapper.getInstance().recordEvent(project, name, AppEventType.RUN);
     }
 
     @Override
@@ -24,6 +26,7 @@ public class CustomProjectTaskListener implements ProjectTaskListener {
         RunConfiguration configuration = context.getRunConfiguration();
         if (configuration == null) return;
         Project project = configuration.getProject();
-        GtmWrapper.getInstance().recordEvent(project, GtmWrapper.AppEventType.RUN);
+        String name = configuration.getName();
+        GtmWrapper.getInstance().recordEvent(project, name, AppEventType.BUILD); // TODO: Build Run etc
     }
 }

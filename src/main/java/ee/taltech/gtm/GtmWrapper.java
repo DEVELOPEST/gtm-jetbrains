@@ -2,34 +2,22 @@ package ee.taltech.gtm;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class GtmWrapper {
-
-    public enum AppEventType {
-        RUN("run"),
-        DEBUG("debug");
-
-        AppEventType(String command) {
-            this.command = command;
-        }
-
-        private final String command;
-
-        public String getCommand() {
-            return command;
-        }
-    }
-
-    private static final Long RECORD_MIN_THRESHOLD = 10000L; // 10 seconds
+    private static final long RECORD_MIN_THRESHOLD = 10000L; // 10 seconds
     private static final String RECORD_COMMAND = "record";
     private static final String VERIFY_COMMAND = "verify";
     private static final String STATUS_OPTION = "--status";
@@ -99,21 +87,21 @@ public class GtmWrapper {
     }
 
     public void recordFile(Project project, VirtualFile file) {
-        Runnable r = () -> runRecord(file.getPath(), project);
+        Runnable r = () -> runRecord(project, file.getPath());
         submitRecord(r);
     }
 
-    public void recordEvent(Project project, AppEventType event) {
-        Runnable r = () -> runRecord(event, project);
+    public void recordEvent(Project project, String eventName, AppEventType event) {
+        Runnable r = () -> runRecord(event, eventName, project);
         submitRecord(r);
     }
 
-    protected void runRecord(AppEventType type, Project project) {
-        runRecord(type.getCommand(), project);
+    protected void runRecord(AppEventType type, String eventName, Project project) {
+        runRecord(project,"-cwd", project.getBasePath(),type.getCommand(), eventName);
     }
 
-    protected void runRecord(String args, Project project) {
-        if (StringUtils.isBlank(args)) return;
+    protected void runRecord(Project project, String... args) {
+        if (args.length == 0 || Arrays.stream(args).anyMatch(String::isBlank)) return;
         if (!gtmExeFound) {
             return;
         }
@@ -124,10 +112,20 @@ public class GtmWrapper {
                     return;
                 }
             }
-            lastRecordPath = args;
+            lastRecordPath = String.join("-", args);
             lastRecordTime = currentTime;
 
-            Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, args).start();
+            args = (String[]) ArrayUtils.add(args, 0, gtmExePath);
+            args = (String[]) ArrayUtils.add(args, 1, RECORD_COMMAND);
+
+            Process process = new ProcessBuilder(args).start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String line;
+            while (null != (line = reader.readLine())) {
+                builder.append(line);
+            }
+            String status = builder.toString();
         } catch (IOException e) {
             e.printStackTrace();
 
