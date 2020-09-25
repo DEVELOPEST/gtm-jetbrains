@@ -4,7 +4,7 @@
     <vendor email="tavo.annus@gmail.com" url="">TODO</vendor>
 
     <description>TODO
-        dddgdgdfgdfgdfgdgdfgdfgdfgdfgdgdgdgdgdgdg
+        aaaaaaaaaaaaaaa
     </description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -16,6 +16,7 @@
         <editorFactoryMouseListener implementation="ee.taltech.gtm.listener.CustomEditorMouseListener"/>
         <fileDocumentManagerListener implementation="ee.taltech.gtm.listener.CustomSaveListener"/>
         <editorFactoryDocumentListener implementation="ee.taltech.gtm.listener.CustomDocumentListener"/>
+        <testStatusListener implementation="ee.taltech.gtm.listener.CustomTestStatusListener"/>
     </extensions>
 
     <projectListeners>
