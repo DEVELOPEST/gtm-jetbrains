@@ -2,6 +2,7 @@ package ee.taltech.gtm
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import ee.taltech.gtm.widget.GTMStatusWidget
 import org.apache.commons.lang.ArrayUtils
 import java.io.BufferedReader
 import java.io.File
@@ -13,47 +14,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
 class GtmWrapper {
-    fun recordFile(project: Project?, file: VirtualFile) {
-        val r = Runnable { runRecord(project, file.path) }
-        submitRecord(r)
-    }
-
-    fun recordEvent(project: Project, eventName: String?, event: AppEventType) {
-        val r = Runnable { runRecord(event, eventName, project) }
-        submitRecord(r)
-    }
-
-    protected fun runRecord(type: AppEventType, eventName: String?, project: Project) {
-        runRecord(project, "-cwd", project.basePath!!, type.command, eventName!!)
-    }
-
-    protected fun runRecord(project: Project?, vararg args: String) {
-        if (args.isEmpty() || Arrays.stream(args).anyMatch { obj: String -> obj.isBlank() }) return
-        if (!gtmExeFound) {
-            return
-        }
-        try {
-            val currentTime = System.currentTimeMillis()
-            if (lastRecordPath == args.joinToString(separator = "-")) {
-                if (lastRecordTime != null && currentTime - lastRecordTime!! <= RECORD_MIN_THRESHOLD) {
-                    return
-                }
-            }
-            lastRecordPath = java.lang.String.join("-", *args)
-            lastRecordTime = currentTime
-            val process = ProcessBuilder(gtmExePath, RECORD_COMMAND, *args).start()
-            val reader = BufferedReader(InputStreamReader(process.inputStream))
-            val builder = StringBuilder()
-            var line: String?
-            while (null != reader.readLine().also { line = it }) {
-                builder.append(line)
-            }
-            val status = builder.toString()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
     companion object {
         private const val RECORD_MIN_THRESHOLD = 10000L // 10 seconds
         private const val RECORD_COMMAND = "record"
@@ -120,6 +80,48 @@ class GtmWrapper {
             }
             recordTask = executor.submit(r)
             lastRunTime = System.currentTimeMillis()
+        }
+    }
+
+    fun recordFile(project: Project?, file: VirtualFile) {
+        val r = Runnable { runRecord(project, file.path) }
+        submitRecord(r)
+    }
+
+    fun recordEvent(project: Project, eventName: String?, event: AppEventType) {
+        val r = Runnable { runRecord(event, eventName, project) }
+        submitRecord(r)
+    }
+
+    protected fun runRecord(type: AppEventType, eventName: String?, project: Project) {
+        runRecord(project, "-cwd", project.basePath!!, type.command, eventName!!)
+    }
+
+    protected fun runRecord(project: Project?, vararg args: String) {
+        if (args.isEmpty() || Arrays.stream(args).anyMatch { obj: String -> obj.isBlank() }) return
+        if (!gtmExeFound) {
+            return
+        }
+        try {
+            val currentTime = System.currentTimeMillis()
+            if (lastRecordPath == args.joinToString(separator = "-")) {
+                if (lastRecordTime != null && currentTime - lastRecordTime!! <= RECORD_MIN_THRESHOLD) {
+                    return
+                }
+            }
+            lastRecordPath = java.lang.String.join("-", *args)
+            lastRecordTime = currentTime
+            val process = ProcessBuilder(gtmExePath, RECORD_COMMAND, STATUS_OPTION, *args).start()
+            val reader = BufferedReader(InputStreamReader(process.inputStream))
+            val builder = StringBuilder()
+            var line: String?
+            while (null != reader.readLine().also { line = it }) {
+                builder.append(line)
+            }
+            val status = builder.toString()
+            GTMStatusWidget.instance.setTimeSpent(status)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 

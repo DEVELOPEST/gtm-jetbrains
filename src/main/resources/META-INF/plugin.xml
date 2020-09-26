@@ -17,6 +17,11 @@
         <fileDocumentManagerListener implementation="ee.taltech.gtm.listener.CustomSaveListener"/>
         <editorFactoryDocumentListener implementation="ee.taltech.gtm.listener.CustomDocumentListener"/>
         <testStatusListener implementation="ee.taltech.gtm.listener.CustomTestStatusListener"/>
+
+        <statusBarWidgetFactory implementation="ee.taltech.gtm.widget.GtmWidgetFactory"
+                                id="ee.taltech.gtm.widget.GtmWidgetFactory
+"
+                                order="first" />
     </extensions>
 
     <projectListeners>
@@ -25,6 +30,7 @@
         <listener class="ee.taltech.gtm.listener.CustomBuildProcessListener"
                   topic="com.intellij.build.BuildProgressListener"/>
     </projectListeners>
+
 
     <actions>
         <!-- Add your actions here -->
