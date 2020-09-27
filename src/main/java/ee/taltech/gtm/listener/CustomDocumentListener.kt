@@ -15,4 +15,6 @@ class CustomDocumentListener : DocumentListener {
         val project = Util.getProject(document)
         project.ifPresent { p: Project? -> GtmWrapper.instance.recordFile(p, file) }
     }
+
+
 }

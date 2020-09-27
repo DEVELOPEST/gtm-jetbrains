@@ -2,12 +2,10 @@ package ee.taltech.gtm.widget
 
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.util.Consumer
+import ee.taltech.gtm.GtmWrapper
 import java.awt.event.MouseEvent
 
 class GtmWidgetPresentation : StatusBarWidget.TextPresentation {
-
-    var displayText = "GTM: not initialized"
-
     override fun getTooltipText(): String {
         return "Git Time Metrics"
     }
@@ -17,7 +15,7 @@ class GtmWidgetPresentation : StatusBarWidget.TextPresentation {
     }
 
     override fun getText(): String {
-        return displayText
+        return GTMStatusWidget.instance.displayText
     }
 
     override fun getAlignment(): Float {

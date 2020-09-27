@@ -4,8 +4,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.StatusBarWidgetFactory
+import ee.taltech.gtm.GtmWrapper
 
 class GtmWidgetFactory : StatusBarWidgetFactory {
+
     override fun getId(): String {
         return GTMStatusWidget::class.java.simpleName
     }
@@ -19,6 +21,7 @@ class GtmWidgetFactory : StatusBarWidgetFactory {
     }
 
     override fun createWidget(project: Project): StatusBarWidget {
+        GtmWrapper.instance.checkHours(project)
         return GTMStatusWidget.instance
     }
 

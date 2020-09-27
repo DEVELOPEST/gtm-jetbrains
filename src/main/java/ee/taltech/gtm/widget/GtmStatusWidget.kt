@@ -14,6 +14,7 @@ class GTMStatusWidget private constructor(): StatusBarWidget {
         var instance = GTMStatusWidget()
         val widgetPresentation = GtmWidgetPresentation()
     }
+    var displayText = "GTM: not initialized"
 
     var statusBar: StatusBar? = null
 
@@ -35,10 +36,10 @@ class GTMStatusWidget private constructor(): StatusBarWidget {
     }
 
     fun setTimeSpent(timeText: String) {
-        val h = hoursRegex.matchEntire(timeText)?.groups?.get(1)?.value
+        val h = hoursRegex.find(timeText)?.groups?.get(1)?.value
         val m = minutesRegex.find(timeText)?.groups?.get(1)?.value
         val s = secondsRegex.find(timeText)?.groups?.get(1)?.value
-        widgetPresentation.displayText = "GTM: ${h ?: 0}h ${m ?: 0}m ${s ?: 0}s"
+        displayText = "GTM: ${h ?: 0}h ${m ?: 0}m ${s ?: 0}s"
         statusBar?.updateWidget(ID())
     }
 }

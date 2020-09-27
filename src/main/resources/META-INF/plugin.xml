@@ -3,8 +3,7 @@
     <name>Gtm-Jetbrains</name>
     <vendor email="tavo.annus@gmail.com" url="">TODO</vendor>
 
-    <description>TODO
-        aaaaaaaaaaaaaaa
+    <description>TODO aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     </description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -19,8 +18,7 @@
         <testStatusListener implementation="ee.taltech.gtm.listener.CustomTestStatusListener"/>
 
         <statusBarWidgetFactory implementation="ee.taltech.gtm.widget.GtmWidgetFactory"
-                                id="ee.taltech.gtm.widget.GtmWidgetFactory
-"
+                                id="ee.taltech.gtm.widget.GtmWidgetFactory"
                                 order="first" />
     </extensions>
 
@@ -29,6 +27,8 @@
                   topic="com.intellij.task.ProjectTaskListener"/>
         <listener class="ee.taltech.gtm.listener.CustomBuildProcessListener"
                   topic="com.intellij.build.BuildProgressListener"/>
+        <listener class="ee.taltech.gtm.listener.CustomVisibleAreaListener"
+                  topic="com.intellij.openapi.editor.event.VisibleAreaListener"/>
     </projectListeners>
 
 
