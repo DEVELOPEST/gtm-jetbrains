@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ee.taltech.gtm"
-version = "0.1-SNAPSHOT"
+version = "0.1.1-SNAPSHOT"
 
 tasks.withType<JavaCompile> {
     sourceCompatibility = "1.8"

@@ -1,10 +1,23 @@
 <idea-plugin>
-    <id>ee.taltech.gtm-jetbrains</id>
-    <name>Gtm-Jetbrains</name>
-    <vendor email="tavo.annus@gmail.com" url="">TODO</vendor>
+    <id>ee.taltech.gtm-enhanced</id>
+    <name>Gtm Enhanced</name>
+    <vendor email="tavo.annus@gmail.com" url="https://github.com/kilpkonn/gtm-enhanced">GTM Enhanced</vendor>
+    <idea-version since-build="202"/>
 
-    <description>TODO aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    </description>
+    <description><![CDATA[
+        Plugin for integration with <b>gtm-enhanced</b> for smooth time tracking.
+        <br/> <br/>
+        Tracks all times spend editing files within git repository as well as run / build events. <br/>
+        Tracked time is saved as git notes and therefore can be pulled / pushed to git as well. <br/>
+        <br/>
+        Installation consists of 2 steps: <br/>
+            1) Install gtm executable from https://github.com/kilpkonn/gtm-enhanced<br/>
+            2) Install plugin from Jetbrains IDE<br/>
+        <br/>
+        <b>NB! To enable time tracking in repository you have to manually type "gtm init" in terminal whilst in project directory.</b><br/>
+        <br/>
+        All bugs and feature requests shall be reported to <a href="https://github.com/kilpkonn/gtm-enhanced">GitHub</a>
+      ]]></description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
