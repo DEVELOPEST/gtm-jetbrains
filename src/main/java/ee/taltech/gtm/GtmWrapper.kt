@@ -96,16 +96,16 @@ class GtmWrapper {
         submitRecord(r)
     }
 
-    fun recordEvent(project: Project, eventName: String?, event: AppEventType) {
-        val r = Runnable { runRecord(event, eventName, project) }
+    fun recordEvent(project: Project, eventName: String?) {
+        val r = Runnable { runRecord(eventName, project) }
         submitRecord(r)
     }
 
-    protected fun runRecord(type: AppEventType, eventName: String?, project: Project) {
-        runRecord(project, CWD_OPTION, project.basePath!!, type.command, eventName!!)
+    private fun runRecord(eventName: String?, project: Project) {
+        runRecord(project, CWD_OPTION, project.basePath!!, "--app", eventName!!)
     }
 
-    protected fun runRecord(project: Project?, vararg args: String) {
+    private fun runRecord(project: Project?, vararg args: String) {
         if (args.isEmpty() || Arrays.stream(args).anyMatch { obj: String -> obj.isBlank() }) return
         if (!gtmExeFound) {
             return

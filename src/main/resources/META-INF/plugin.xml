@@ -36,12 +36,12 @@
     </extensions>
 
     <projectListeners>
-        <listener class="ee.taltech.gtm.listener.CustomProjectTaskListener"
-                  topic="com.intellij.task.ProjectTaskListener"/>
         <listener class="ee.taltech.gtm.listener.CustomBuildProcessListener"
                   topic="com.intellij.build.BuildProgressListener"/>
         <listener class="ee.taltech.gtm.listener.CustomVisibleAreaListener"
                   topic="com.intellij.openapi.editor.event.VisibleAreaListener"/>
+        <listener class="ee.taltech.gtm.listener.CustomProcessListener"
+                  topic="com.intellij.execution.ExecutionListener" />
     </projectListeners>
 
 
