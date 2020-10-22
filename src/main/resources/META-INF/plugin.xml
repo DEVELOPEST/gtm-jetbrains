@@ -36,8 +36,6 @@
     </extensions>
 
     <projectListeners>
-        <listener class="ee.taltech.gtm.listener.CustomBuildProcessListener"
-                  topic="com.intellij.build.BuildProgressListener"/>
         <listener class="ee.taltech.gtm.listener.CustomVisibleAreaListener"
                   topic="com.intellij.openapi.editor.event.VisibleAreaListener"/>
         <listener class="ee.taltech.gtm.listener.CustomProcessListener"

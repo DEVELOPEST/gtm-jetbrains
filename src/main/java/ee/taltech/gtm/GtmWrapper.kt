@@ -2,6 +2,7 @@ package ee.taltech.gtm
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import ee.taltech.gtm.popup.PopupFactory
 import ee.taltech.gtm.widget.GTMStatusWidget
 import java.io.BufferedReader
 import java.io.File
@@ -18,10 +19,13 @@ class GtmWrapper {
         private const val RECORD_COMMAND = "record"
         private const val VERIFY_COMMAND = "verify"
         private const val STATUS_COMMAND = "status"
+        private const val INIT_COMMAND = "init"
         private const val STATUS_OPTION = "--status"
         private const val TOTAL_ONLY_OPTION = "--total-only"
         private const val ALL_OPTION = "--all"
         private const val CWD_OPTION = "--cwd"
+
+        private const val INIT_FAIL = "unable to initialize"
 
         private var gtmExePath: String? = null
         private var gtmExeFound = false
@@ -32,6 +36,10 @@ class GtmWrapper {
         private var recordTask: Future<*>? = null
         private const val MAX_RUN_TIME = 2000L // 2 seconds
         val instance: GtmWrapper = GtmWrapper()
+
+        init {
+            initGtmExePath()
+        }
 
         private fun initGtmExePath(): Boolean {
             val gtmExeName = if (System.getProperty("os.name").startsWith("Windows")) "gtm.exe" else "gtm"
@@ -70,10 +78,6 @@ class GtmWrapper {
                 println("Unable to find executable gtm in PATH")
             }
             return gtmExeFound
-        }
-
-        init {
-            initGtmExePath()
         }
 
         @Synchronized
@@ -127,17 +131,37 @@ class GtmWrapper {
         }
     }
 
-    fun checkHours(project: Project) {
-        if (gtmExeFound) {
-            val process = ProcessBuilder(gtmExePath,
-                    STATUS_COMMAND,
-                    CWD_OPTION,
-                    project.basePath!!,
-                    TOTAL_ONLY_OPTION
-            ).start()
-            val status = readOutput(process)
+    fun checkHours(project: Project, retries: Int = 1) {
+        if (!gtmExeFound) return
+
+        val process = ProcessBuilder(gtmExePath,
+                STATUS_COMMAND,
+                CWD_OPTION,
+                project.basePath!!,
+                TOTAL_ONLY_OPTION
+        ).start()
+        val status = readOutput(process)
+        if (status.toLowerCase().contains("not initialized")) {
+            PopupFactory.showInitConfirmation(project, {
+                if (initGtm()) {
+                    PopupFactory.showInfoNotification("Gtm", "Successfully initialized gtm time tracking")
+                    if (retries > 0) checkHours(project, retries - 1)
+                }
+            }, {
+                PopupFactory.showInfoNotification("Gtm", "You can later init time tracking via `gtm init`")
+            })
+        } else {
             GTMStatusWidget.instance.setTimeSpent(status)
         }
+
+    }
+
+    private fun initGtm(): Boolean {
+        val process = ProcessBuilder(gtmExePath,
+                INIT_COMMAND).start();
+        val status = readOutput(process)
+        PopupFactory.showErrorNotification("Gtm", status)
+        return !status.toLowerCase().contains(INIT_FAIL)
     }
 
     private fun readOutput(process: Process): String {
