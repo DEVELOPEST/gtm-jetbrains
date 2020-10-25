@@ -1,8 +1,10 @@
 package ee.taltech.gtm
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import ee.taltech.gtm.popup.PopupFactory
+import ee.taltech.gtm.service.ConfigService
 import ee.taltech.gtm.widget.GTMStatusWidget
 import java.io.BufferedReader
 import java.io.File
@@ -12,6 +14,7 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+
 
 class GtmWrapper {
     companion object {
@@ -35,6 +38,7 @@ class GtmWrapper {
         private val executor = Executors.newSingleThreadExecutor()
         private var recordTask: Future<*>? = null
         private const val MAX_RUN_TIME = 2000L // 2 seconds
+        private val configService = ApplicationManager.getApplication().getService(ConfigService::class.java)
         val instance: GtmWrapper = GtmWrapper()
 
         init {
@@ -100,13 +104,13 @@ class GtmWrapper {
         submitRecord(r)
     }
 
-    fun recordEvent(project: Project, eventName: String?) {
+    fun recordEvent(project: Project, eventName: String) {
         val r = Runnable { runRecord(eventName, project) }
         submitRecord(r)
     }
 
-    private fun runRecord(eventName: String?, project: Project) {
-        runRecord(project, CWD_OPTION, project.basePath!!, "--app", eventName!!)
+    private fun runRecord(eventName: String, project: Project) {
+        runRecord(project, CWD_OPTION, project.basePath!!, "--app", eventName)
     }
 
     private fun runRecord(project: Project?, vararg args: String) {
@@ -141,14 +145,15 @@ class GtmWrapper {
                 TOTAL_ONLY_OPTION
         ).start()
         val status = readOutput(process)
-        if (status.toLowerCase().contains("not initialized")) {
+        if (status.toLowerCase().contains("not initialized") && configService.state.isGtmDisabled != true) {
             PopupFactory.showInitConfirmation(project, {
-                if (initGtm()) {
+                if (initGtm(project)) {
                     PopupFactory.showInfoNotification("Gtm", "Successfully initialized gtm time tracking")
                     if (retries > 0) checkHours(project, retries - 1)
                 }
             }, {
                 PopupFactory.showInfoNotification("Gtm", "You can later init time tracking via `gtm init`")
+                configService.setGtmDisabled(true)
             })
         } else {
             GTMStatusWidget.instance.setTimeSpent(status)
@@ -156,9 +161,8 @@ class GtmWrapper {
 
     }
 
-    private fun initGtm(): Boolean {
-        val process = ProcessBuilder(gtmExePath,
-                INIT_COMMAND).start();
+    private fun initGtm(project: Project): Boolean {
+        val process = ProcessBuilder(gtmExePath, INIT_COMMAND, CWD_OPTION, project.basePath).start();
         val status = readOutput(process)
         PopupFactory.showErrorNotification("Gtm", status)
         return !status.toLowerCase().contains(INIT_FAIL)
