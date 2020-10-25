@@ -33,7 +33,7 @@
         <statusBarWidgetFactory implementation="ee.taltech.gtm.widget.GtmWidgetFactory"
                                 id="ee.taltech.gtm.widget.GtmWidgetFactory"
                                 order="first" />
-        <applicationService serviceImplementation="ee.taltech.gtm.service.ConfigService" />
+        <projectService serviceImplementation="ee.taltech.gtm.service.ConfigService" />
     </extensions>
 
     <projectListeners>

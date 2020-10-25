@@ -1,6 +1,7 @@
 package ee.taltech.gtm
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import ee.taltech.gtm.popup.PopupFactory
@@ -38,7 +39,7 @@ class GtmWrapper {
         private val executor = Executors.newSingleThreadExecutor()
         private var recordTask: Future<*>? = null
         private const val MAX_RUN_TIME = 2000L // 2 seconds
-        private val configService = ApplicationManager.getApplication().getService(ConfigService::class.java)
+        private var configService: ConfigService? = null
         val instance: GtmWrapper = GtmWrapper()
 
         init {
@@ -136,6 +137,7 @@ class GtmWrapper {
     }
 
     fun checkHours(project: Project, retries: Int = 1) {
+        configService = project.getService(ConfigService::class.java)
         if (!gtmExeFound) return
 
         val process = ProcessBuilder(gtmExePath,
@@ -145,7 +147,7 @@ class GtmWrapper {
                 TOTAL_ONLY_OPTION
         ).start()
         val status = readOutput(process)
-        if (status.toLowerCase().contains("not initialized") && configService.state.isGtmDisabled != true) {
+        if (status.toLowerCase().contains("not initialized") && configService?.state?.isGtmDisabled != true) {
             PopupFactory.showInitConfirmation(project, {
                 if (initGtm(project)) {
                     PopupFactory.showInfoNotification("Gtm", "Successfully initialized gtm time tracking")
@@ -153,7 +155,7 @@ class GtmWrapper {
                 }
             }, {
                 PopupFactory.showInfoNotification("Gtm", "You can later init time tracking via `gtm init`")
-                configService.setGtmDisabled(true)
+                configService?.setGtmDisabled(true)
             })
         } else {
             GTMStatusWidget.instance.setTimeSpent(status)

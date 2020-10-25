@@ -4,11 +4,11 @@ import com.intellij.openapi.components.*
 
 @State(
         name = "GtmEnhanced",
-        storages = [Storage("gtm.xml")] // Storage(value = StoragePathMacros.WORKSPACE_FILE)
+        storages = [Storage(StoragePathMacros.WORKSPACE_FILE)] // Storage(value = StoragePathMacros.WORKSPACE_FILE)
 )
 class ConfigService : PersistentStateComponent<ConfigService.Config> {
     data class Config(
-            var isGtmDisabled: Boolean? = null
+            var isGtmDisabled: Boolean = false
     )
 
     private var config = Config()
