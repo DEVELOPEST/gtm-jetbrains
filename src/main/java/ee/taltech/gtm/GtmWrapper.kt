@@ -1,7 +1,5 @@
 package ee.taltech.gtm
 
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import ee.taltech.gtm.popup.PopupFactory
@@ -26,10 +24,13 @@ class GtmWrapper {
         private const val INIT_COMMAND = "init"
         private const val STATUS_OPTION = "--status"
         private const val TOTAL_ONLY_OPTION = "--total-only"
+        private const val VERSION_OPTION = "-version"
         private const val ALL_OPTION = "--all"
         private const val CWD_OPTION = "--cwd"
 
         private const val INIT_FAIL = "unable to initialize"
+
+        private const val GTM_MIN_VERSION = "0.0.0"
 
         private var gtmExePath: String? = null
         private var gtmExeFound = false
@@ -41,63 +42,89 @@ class GtmWrapper {
         private const val MAX_RUN_TIME = 2000L // 2 seconds
         private var configService: ConfigService? = null
         val instance: GtmWrapper = GtmWrapper()
+    }
 
-        init {
-            initGtmExePath()
+    init {
+        initGtmExePath()
+        if (gtmExeFound) {
+            checkGtmVersion()
+        }
+    }
+
+    private fun initGtmExePath(): Boolean {
+        val gtmExeName = if (System.getProperty("os.name").startsWith("Windows")) "gtm.exe" else "gtm"
+        val gtmPath: Array<String>
+        val pathVar = StringBuilder(System.getenv("PATH"))
+        gtmPath = if (System.getProperty("os.name").startsWith("Windows")) {
+            // Setup an additional Windows user path
+            val userWinBin = System.getProperty("user.home") + File.separator + "gtm"
+            arrayOf(
+                    Paths.get(System.getenv("ProgramFiles"), "gtm").toString(),
+                    Paths.get(System.getenv("ProgramFiles(x86)"), "gtm").toString(),
+                    userWinBin)
+        } else {
+            // Setup additional common *nix user paths
+            val userBin = System.getProperty("user.home") + File.separator + "bin"
+            val userLocalBin = System.getProperty("user.home") + File.separator + "local" + File.separator + "bin"
+            arrayOf("/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin/", userBin, userLocalBin)
+        }
+        for (aGtmPath in gtmPath) {
+            if (!pathVar.toString().contains(aGtmPath)) {
+                pathVar.append(File.pathSeparator).append(aGtmPath)
+            }
+        }
+        var result: String? = null
+        val pathDirs = pathVar.toString().split(File.pathSeparator).toTypedArray()
+        for (pathDir in pathDirs) {
+            val exeFile = Paths.get(pathDir).resolve(gtmExeName).toFile()
+            if (exeFile.absoluteFile.exists() && exeFile.absoluteFile.canExecute()) {
+                result = exeFile.absolutePath
+                break
+            }
+        }
+        gtmExeFound = result != null
+        gtmExePath = result
+        if (!gtmExeFound) {
+            println("Unable to find executable gtm in PATH")
+        }
+        return gtmExeFound
+    }
+
+    private fun checkGtmVersion() {
+        val process = Runtime.getRuntime().exec("gtm --version")
+        val version = readOutput(process).split(".")
+        val minVersion = GTM_MIN_VERSION.split(".")
+        var isUpToDate: Boolean? = null
+        if (version.size >= minVersion.size) {
+            minVersion.zip(version)
+                    .forEach { (min, curr) ->
+                        if (isUpToDate == null) {
+                            isUpToDate = if (curr != min) curr.toInt() > min.toInt() else null
+                        }
+                    }
+        } else {
+            isUpToDate = false
         }
 
-        private fun initGtmExePath(): Boolean {
-            val gtmExeName = if (System.getProperty("os.name").startsWith("Windows")) "gtm.exe" else "gtm"
-            val gtmPath: Array<String>
-            val pathVar = StringBuilder(System.getenv("PATH"))
-            gtmPath = if (System.getProperty("os.name").startsWith("Windows")) {
-                // Setup an additional Windows user path
-                val userWinBin = System.getProperty("user.home") + File.separator + "gtm"
-                arrayOf(
-                        Paths.get(System.getenv("ProgramFiles"), "gtm").toString(),
-                        Paths.get(System.getenv("ProgramFiles(x86)"), "gtm").toString(),
-                        userWinBin)
-            } else {
-                // Setup additional common *nix user paths
-                val userBin = System.getProperty("user.home") + File.separator + "bin"
-                val userLocalBin = System.getProperty("user.home") + File.separator + "local" + File.separator + "bin"
-                arrayOf("/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin/", userBin, userLocalBin)
-            }
-            for (aGtmPath in gtmPath) {
-                if (!pathVar.toString().contains(aGtmPath)) {
-                    pathVar.append(File.pathSeparator).append(aGtmPath)
-                }
-            }
-            var result: String? = null
-            val pathDirs = pathVar.toString().split(File.pathSeparator).toTypedArray()
-            for (pathDir in pathDirs) {
-                val exeFile = Paths.get(pathDir).resolve(gtmExeName).toFile()
-                if (exeFile.absoluteFile.exists() && exeFile.absoluteFile.canExecute()) {
-                    result = exeFile.absolutePath
-                    break
-                }
-            }
-            gtmExeFound = result != null
-            gtmExePath = result
-            if (!gtmExeFound) {
-                println("Unable to find executable gtm in PATH")
-            }
-            return gtmExeFound
+        if (isUpToDate == false) {
+            PopupFactory.showInfoMessage("Gtm",
+                    "Gtm-enhanced core is not updated to latest and may cause some functionality not to work\n"
+                            + "Latest version can be downloaded from https://github.com/kilpkonn/gtm-enhanced/releases")
         }
+    }
 
-        @Synchronized
-        private fun submitRecord(r: Runnable) {
-            if (recordTask != null && !recordTask!!.isDone) {
-                // make sure it's not a hung process
-                if (lastRunTime != null && System.currentTimeMillis() - lastRunTime!! > MAX_RUN_TIME) {
-                    // process is hung, cancel it
-                    recordTask!!.cancel(true)
-                    println("Record task cancelled")
-                }
+    @Synchronized
+    private fun submitRecord(r: Runnable) {
+        if (recordTask != null && !recordTask!!.isDone) {
+            // make sure it's not a hung process
+            if (lastRunTime != null && System.currentTimeMillis() - lastRunTime!! > MAX_RUN_TIME) {
+                // process is hung, cancel it
+                recordTask!!.cancel(true)
+                println("Record task cancelled")
             }
-            recordTask = executor.submit(r)
-            lastRunTime = System.currentTimeMillis()
         }
+        recordTask = executor.submit(r)
+        lastRunTime = System.currentTimeMillis()
     }
 
     fun recordFile(project: Project?, file: VirtualFile) {
@@ -177,6 +204,7 @@ class GtmWrapper {
         while (null != reader.readLine().also { line = it }) {
             builder.append(line)
         }
+        process.inputStream.close()
         return builder.toString()
     }
 }
