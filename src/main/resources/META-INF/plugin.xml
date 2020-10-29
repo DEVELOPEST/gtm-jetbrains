@@ -41,6 +41,8 @@
                   topic="com.intellij.openapi.editor.event.VisibleAreaListener"/>
         <listener class="ee.taltech.gtm.listener.CustomProcessListener"
                   topic="com.intellij.execution.ExecutionListener" />
+        <listener class="ee.taltech.gtm.listener.CustomProjectManagerListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener" />
     </projectListeners>
 
 
