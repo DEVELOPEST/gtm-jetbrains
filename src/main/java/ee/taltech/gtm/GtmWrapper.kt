@@ -30,7 +30,7 @@ class GtmWrapper {
 
         private const val INIT_FAIL = "unable to initialize"
 
-        private const val GTM_MIN_VERSION = "0.0.0"
+        private const val GTM_MIN_VERSION = "0.1.0"
 
         private var gtmExePath: String? = null
         private var gtmExeFound = false
@@ -57,20 +57,20 @@ class GtmWrapper {
         val pathVar = StringBuilder(System.getenv("PATH"))
         gtmPath = if (System.getProperty("os.name").startsWith("Windows")) {
             // Setup an additional Windows user path
-            val userWinBin = System.getProperty("user.home") + File.separator + "gtm"
+            val userWinBin = "${System.getProperty("user.home")}${File.separator}gtm"
             arrayOf(
                     Paths.get(System.getenv("ProgramFiles"), "gtm").toString(),
                     Paths.get(System.getenv("ProgramFiles(x86)"), "gtm").toString(),
                     userWinBin)
         } else {
             // Setup additional common *nix user paths
-            val userBin = System.getProperty("user.home") + File.separator + "bin"
-            val userLocalBin = System.getProperty("user.home") + File.separator + "local" + File.separator + "bin"
+            val userBin = "${System.getProperty("user.home")}${File.separator}bin"
+            val userLocalBin = "${System.getProperty("user.home")}${File.separator}local${File.separator}bin"
             arrayOf("/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin/", userBin, userLocalBin)
         }
-        for (aGtmPath in gtmPath) {
-            if (!pathVar.toString().contains(aGtmPath)) {
-                pathVar.append(File.pathSeparator).append(aGtmPath)
+        gtmPath.forEach { path ->
+            if (!pathVar.toString().contains(path)) {
+                pathVar.append(File.pathSeparator).append(path)
             }
         }
         var result: String? = null
@@ -91,7 +91,7 @@ class GtmWrapper {
     }
 
     private fun checkGtmVersion() {
-        val process = Runtime.getRuntime().exec("gtm --version")
+        val process = Runtime.getRuntime().exec("$gtmExePath --version")
         val version = readOutput(process).split(".")
         val minVersion = GTM_MIN_VERSION.split(".")
         var isUpToDate: Boolean? = null
@@ -193,8 +193,11 @@ class GtmWrapper {
     private fun initGtm(project: Project): Boolean {
         val process = ProcessBuilder(gtmExePath, INIT_COMMAND, CWD_OPTION, project.basePath).start();
         val status = readOutput(process)
-        PopupFactory.showErrorNotification("Gtm", status)
-        return !status.toLowerCase().contains(INIT_FAIL)
+        val success = !status.toLowerCase().contains(INIT_FAIL)
+        if (!success) {
+            PopupFactory.showErrorNotification("Gtm", status)
+        }
+        return success
     }
 
     private fun readOutput(process: Process): String {
