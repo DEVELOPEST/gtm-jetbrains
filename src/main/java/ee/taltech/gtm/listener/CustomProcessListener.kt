@@ -12,15 +12,15 @@ import kotlinx.coroutines.launch
 class CustomProcessListener: ExecutionListener {
 
     companion object {
-        private const val TASK_SEND_DELAY = 1000L
-        private const val MAX_TASK_TIME = 60 * 60 // 1 hour
+        private const val TASK_SEND_DELAY = 5000L
+        private const val MAX_TASK_TIME = 5 * 60 * 1000L // 5 min
     }
 
     private val jobs: MutableMap<String, Job> = mutableMapOf()
 
     override fun processStarting(executorId: String, env: ExecutionEnvironment) {
         jobs[executorId] = GlobalScope.launch{
-            repeat(MAX_TASK_TIME) {
+            repeat((MAX_TASK_TIME / TASK_SEND_DELAY).toInt()) {
                 GtmWrapper.instance.recordEvent(env.project, env.runProfile.toString())
                 delay(TASK_SEND_DELAY)
             }

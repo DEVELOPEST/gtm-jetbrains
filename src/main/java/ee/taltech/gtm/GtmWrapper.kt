@@ -24,10 +24,10 @@ class GtmWrapper {
         private const val INIT_COMMAND = "init"
         private const val STATUS_OPTION = "--status"
         private const val TOTAL_ONLY_OPTION = "--total-only"
-        private const val VERSION_OPTION = "-version"
+        private const val VERSION_OPTION = "--version"
+
         private const val ALL_OPTION = "--all"
         private const val CWD_OPTION = "--cwd"
-
         private const val INIT_FAIL = "unable to initialize"
 
         private const val GTM_MIN_VERSION = "0.1.0"
