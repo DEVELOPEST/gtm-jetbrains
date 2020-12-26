@@ -1,10 +1,10 @@
-package ee.taltech.gtm
+package ee.developest.gtm
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import ee.taltech.gtm.popup.PopupFactory
-import ee.taltech.gtm.service.ConfigService
-import ee.taltech.gtm.widget.GTMStatusWidget
+import ee.developest.gtm.popup.PopupFactory
+import ee.developest.gtm.service.ConfigService
+import ee.developest.gtm.widget.GTMStatusWidget
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -53,9 +53,8 @@ class GtmWrapper {
 
     private fun initGtmExePath(): Boolean {
         val gtmExeName = if (System.getProperty("os.name").startsWith("Windows")) "gtm.exe" else "gtm"
-        val gtmPath: Array<String>
         val pathVar = StringBuilder(System.getenv("PATH"))
-        gtmPath = if (System.getProperty("os.name").startsWith("Windows")) {
+        val gtmPath: Array<String> = if (System.getProperty("os.name").startsWith("Windows")) {
             // Setup an additional Windows user path
             val userWinBin = "${System.getProperty("user.home")}${File.separator}gtm"
             arrayOf(
@@ -91,7 +90,7 @@ class GtmWrapper {
     }
 
     private fun checkGtmVersion() {
-        val process = Runtime.getRuntime().exec("$gtmExePath --version")
+        val process = Runtime.getRuntime().exec("$gtmExePath $VERSION_OPTION")
         val version = readOutput(process).split(".")
         val minVersion = GTM_MIN_VERSION.split(".")
         var isUpToDate: Boolean? = null

@@ -1,8 +1,8 @@
-package ee.taltech.gtm.listener
+package ee.developest.gtm.listener
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
-import ee.taltech.gtm.GtmWrapper
+import ee.developest.gtm.GtmWrapper
 
 class CustomProjectManagerListener: ProjectManagerListener {
 

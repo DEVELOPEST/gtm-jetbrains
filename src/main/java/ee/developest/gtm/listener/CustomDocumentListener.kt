@@ -1,11 +1,11 @@
-package ee.taltech.gtm.listener
+package ee.developest.gtm.listener
 
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
-import ee.taltech.gtm.GtmWrapper
-import ee.taltech.gtm.Util
+import ee.developest.gtm.GtmWrapper
+import ee.developest.gtm.Util
 
 class CustomDocumentListener : DocumentListener {
     override fun documentChanged(event: DocumentEvent) {

@@ -1,4 +1,4 @@
-package ee.taltech.gtm.service
+package ee.developest.gtm.service
 
 import com.intellij.openapi.components.*
 

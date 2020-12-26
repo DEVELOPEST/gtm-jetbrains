@@ -1,8 +1,8 @@
-package ee.taltech.gtm.widget
+package ee.developest.gtm.widget
 
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.util.Consumer
-import ee.taltech.gtm.GtmWrapper
+import ee.developest.gtm.GtmWrapper
 import java.awt.event.MouseEvent
 
 class GtmWidgetPresentation : StatusBarWidget.TextPresentation {

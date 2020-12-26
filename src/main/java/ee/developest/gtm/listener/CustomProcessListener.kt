@@ -1,9 +1,9 @@
-package ee.taltech.gtm.listener
+package ee.developest.gtm.listener
 
 import com.intellij.execution.ExecutionListener
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
-import ee.taltech.gtm.GtmWrapper
+import ee.developest.gtm.GtmWrapper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

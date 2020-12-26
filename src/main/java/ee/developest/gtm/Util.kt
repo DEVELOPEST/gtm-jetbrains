@@ -1,4 +1,4 @@
-package ee.taltech.gtm
+package ee.developest.gtm
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory

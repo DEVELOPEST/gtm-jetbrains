@@ -1,4 +1,4 @@
-package ee.taltech.gtm.listener
+package ee.developest.gtm.listener
 
 import com.intellij.execution.testframework.AbstractTestProxy
 import com.intellij.execution.testframework.TestStatusListener

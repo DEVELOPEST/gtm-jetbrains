@@ -1,9 +1,9 @@
-package ee.taltech.gtm.listener
+package ee.developest.gtm.listener
 
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.event.EditorMouseListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import ee.taltech.gtm.GtmWrapper
+import ee.developest.gtm.GtmWrapper
 
 class CustomEditorMouseListener : EditorMouseListener {
     override fun mousePressed(event: EditorMouseEvent) {

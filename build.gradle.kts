@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.intellij") version "0.4.22"
 }
 
-group = "ee.taltech.gtm"
+group = "ee.developest.gtm"
 version = "0.1.2-alpha"
 
 tasks.withType<JavaCompile> {

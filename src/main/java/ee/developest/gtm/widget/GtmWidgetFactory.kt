@@ -1,10 +1,10 @@
-package ee.taltech.gtm.widget
+package ee.developest.gtm.widget
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.StatusBarWidgetFactory
-import ee.taltech.gtm.GtmWrapper
+import ee.developest.gtm.GtmWrapper
 
 class GtmWidgetFactory : StatusBarWidgetFactory {
 

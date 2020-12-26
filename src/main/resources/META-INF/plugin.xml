@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>ee.taltech.gtm-enhanced</id>
+    <id>ee.developest.gtm-enhanced</id>
     <name>Gtm Enhanced</name>
     <vendor email="tavo.annus@gmail.com" url="https://github.com/kilpkonn/gtm-enhanced">GTM Enhanced</vendor>
     <idea-version since-build="202"/>
@@ -25,23 +25,23 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <editorFactoryMouseListener implementation="ee.taltech.gtm.listener.CustomEditorMouseListener"/>
-        <fileDocumentManagerListener implementation="ee.taltech.gtm.listener.CustomSaveListener"/>
-        <editorFactoryDocumentListener implementation="ee.taltech.gtm.listener.CustomDocumentListener"/>
-        <testStatusListener implementation="ee.taltech.gtm.listener.CustomTestStatusListener"/>
+        <editorFactoryMouseListener implementation="ee.developest.gtm.listener.CustomEditorMouseListener"/>
+        <fileDocumentManagerListener implementation="ee.developest.gtm.listener.CustomSaveListener"/>
+        <editorFactoryDocumentListener implementation="ee.developest.gtm.listener.CustomDocumentListener"/>
+        <testStatusListener implementation="ee.developest.gtm.listener.CustomTestStatusListener"/>
 
-        <statusBarWidgetFactory implementation="ee.taltech.gtm.widget.GtmWidgetFactory"
-                                id="ee.taltech.gtm.widget.GtmWidgetFactory"
+        <statusBarWidgetFactory implementation="ee.developest.gtm.widget.GtmWidgetFactory"
+                                id="ee.developest.gtm.widget.GtmWidgetFactory"
                                 order="first" />
-        <projectService serviceImplementation="ee.taltech.gtm.service.ConfigService" />
+        <projectService serviceImplementation="ee.developest.gtm.service.ConfigService" />
     </extensions>
 
     <projectListeners>
-        <listener class="ee.taltech.gtm.listener.CustomVisibleAreaListener"
+        <listener class="ee.developest.gtm.listener.CustomVisibleAreaListener"
                   topic="com.intellij.openapi.editor.event.VisibleAreaListener"/>
-        <listener class="ee.taltech.gtm.listener.CustomProcessListener"
+        <listener class="ee.developest.gtm.listener.CustomProcessListener"
                   topic="com.intellij.execution.ExecutionListener" />
-        <listener class="ee.taltech.gtm.listener.CustomProjectManagerListener"
+        <listener class="ee.developest.gtm.listener.CustomProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener" />
     </projectListeners>
 

@@ -1,4 +1,4 @@
-package ee.taltech.gtm.popup
+package ee.developest.gtm.popup
 
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType

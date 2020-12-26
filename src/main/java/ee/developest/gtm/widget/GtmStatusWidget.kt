@@ -1,4 +1,4 @@
-package ee.taltech.gtm.widget
+package ee.developest.gtm.widget
 
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
@@ -39,6 +39,9 @@ class GTMStatusWidget private constructor(): StatusBarWidget {
         val h = hoursRegex.find(timeText)?.groups?.get(1)?.value
         val m = minutesRegex.find(timeText)?.groups?.get(1)?.value
         val s = secondsRegex.find(timeText)?.groups?.get(1)?.value
+        if (h == null && m == null && s == null) {
+            return; // Keep previous
+        }
         displayText = "GTM: ${h ?: 0}h ${m ?: 0}m ${s ?: 0}s"
         statusBar?.updateWidget(ID())
     }
