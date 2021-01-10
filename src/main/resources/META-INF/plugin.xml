@@ -1,20 +1,20 @@
 <idea-plugin>
-    <id>ee.developest.gtm-enhanced</id>
+    <id>ee.developest.gtm</id>
     <name>Gtm Enhanced</name>
-    <vendor email="tavo.annus@gmail.com" url="https://github.com/kilpkonn/gtm-enhanced">GTM Enhanced</vendor>
+    <vendor email="tavo.annus@gmail.com" url="https://github.com/DEVELOPEST/gtm-jetbrains">GTM Enhanced</vendor>
     <idea-version since-build="202"/>
 
     <description><![CDATA[
-        Plugin for integration with <b>gtm-enhanced</b> for smooth time tracking.
+        Plugin for integration with <b>gtm-core</b> for smooth time tracking.
         <br/> <br/>
         Tracks all times spend editing files within git repository as well as run / build events. <br/>
-        Tracked time is saved as git notes and therefore can be pulled / pushed to git as well. <br/>
+        Tracked time is saved as git notes and therefore can be pulled / pushed to git. <br/>
         <br/>
         Installation consists of 2 steps: <br/>
-            1) Install gtm executable from https://github.com/kilpkonn/gtm-enhanced<br/>
+            1) Install gtm executable from https://github.com/DEVELOPEST/gtm-core<br/>
             2) Install plugin from Jetbrains IDE<br/>
         <br/>
-        <b>NB! To enable time tracking in repository you have to manually type "gtm init" in terminal whilst in project directory.</b><br/>
+        <b>NB! To enable time tracking in repository you have to manually type "gtm init" in terminal whilst in project directory or click yes upon prompt by IDE</b><br/>
         <br/>
         All bugs and feature requests shall be reported to <a href="https://github.com/kilpkonn/gtm-enhanced">GitHub</a>
       ]]></description>
