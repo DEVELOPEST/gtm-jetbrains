@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ee.developest.gtm"
-version = "0.1.2-alpha"
+version = "1.0.0-stable"
 
 tasks.withType<JavaCompile> {
     sourceCompatibility = "1.8"

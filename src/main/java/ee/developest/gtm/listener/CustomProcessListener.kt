@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class CustomProcessListener: ExecutionListener {
 
     companion object {
-        private const val TASK_SEND_DELAY = 5000L
+        private const val TASK_SEND_DELAY = 10000L
         private const val MAX_TASK_TIME = 5 * 60 * 1000L // 5 min
     }
 

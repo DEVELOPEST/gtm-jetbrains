@@ -17,7 +17,7 @@ import java.util.concurrent.Future
 
 class GtmWrapper {
     companion object {
-        private const val RECORD_MIN_THRESHOLD = 10000L // 10 seconds
+        private const val RECORD_MIN_THRESHOLD = 5000L // 5 seconds
         private const val RECORD_COMMAND = "record"
         private const val VERIFY_COMMAND = "verify"
         private const val STATUS_COMMAND = "status"
@@ -30,7 +30,7 @@ class GtmWrapper {
         private const val CWD_OPTION = "--cwd"
         private const val INIT_FAIL = "unable to initialize"
 
-        private const val GTM_MIN_VERSION = "0.1.0"
+        private const val GTM_MIN_VERSION = "1.0.0"
 
         private var gtmExePath: String? = null
         private var gtmExeFound = false
@@ -107,8 +107,8 @@ class GtmWrapper {
 
         if (isUpToDate == false) {
             PopupFactory.showInfoMessage("Gtm",
-                    "Gtm-enhanced core is not updated to latest and may cause some functionality not to work\n"
-                            + "Latest version can be downloaded from https://github.com/kilpkonn/gtm-enhanced/releases")
+                    "Gtm-core is not updated to latest and may cause some functionality not to work\n"
+                            + "Latest version can be downloaded from https://github.com/DEVELOPEST/gtm-core/releases")
         }
     }
 
